@@ -18,7 +18,8 @@
     $categorie_selectionnee = isset($_GET['categorie']) ? $_GET['categorie'] : '';
 
     echo "<div class='categories'>";
-    // Bouton pour toutes les catégories pas cliquable pour eviter un bug quand sur la page de mauvaise reponse
+    //ici on affiche les catégories pour le styles 
+    //mais elle ne sont pas cliquables quand on est sur la page de vérification pour eviter les bugs
     echo "<span class='button_cat'>Toutes</span>";
 
     foreach ($categories as $categorie) {
@@ -27,9 +28,10 @@
     }
     echo "</div>";
 ?>
+
 <?php
 include 'db.php';
-
+// Récupération des paramètre
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $question = $_POST['question'];
     $answer = $_POST['answer'];

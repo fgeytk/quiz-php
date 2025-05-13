@@ -9,7 +9,7 @@
 </head>
 <body>
         <h2>Voici le classement des joueurs :</h2>
-
+            //tableau du classement
             <div class="div_question">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
@@ -30,6 +30,7 @@
                         $players = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         $position = 1;
+                        // j'ai finalement pas mis le gold silver et bronze car c'était tres laid
                         foreach ($players as $player) {
                             $row_class = '';
                             if ($position == 1) {
