@@ -60,6 +60,7 @@ if ($categorie) {
 
 $stmt_check = $pdo->prepare($sql_check_questions);
 $stmt_check->bindParam(':id_joueur', $id_joueur);
+
 if ($categorie) {
     $stmt_check->bindParam(':categorie', $categorie);
 }
@@ -81,7 +82,7 @@ if ($questions_left > 0) {
     if ($categorie) {
         $sql .= " AND q.categorie = :categorie";
     }
-    
+    // Ajout de la condition pour ne pas afficher les questions déjà répondues
     $sql .= " ORDER BY RAND() LIMIT 1";
     
     $stmt = $pdo->prepare($sql);
@@ -102,16 +103,17 @@ if ($questions_left > 0) {
         echo "</div>";
         
         echo "<h2>" . htmlspecialchars($question['question']) . "</h2>";
-
+        // tableau de reponses
         $answers = [
             $question['reponse_vrai'],
             $question['reponse_fausse1'],
             $question['reponse_fausse2'],
             $question['reponse_fausse3']
         ];
-
+        //melanger les reponses pour pas avoir la bonne reponse en premier
         shuffle($answers);
         
+        //creation des bouttons de reponses
         foreach ($answers as $answer) {
             echo "<form method='post' action='verif.php?pseudo=" . urlencode($pseudo) . "&id_joueur=" . urlencode($id_joueur) . "&categorie=" . urlencode($categorie ?? '') . "'>";
             echo "<input type='hidden' name='question' value='" . htmlspecialchars($question['question']) . "'>";
