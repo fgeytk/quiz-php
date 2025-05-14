@@ -77,11 +77,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header('Location: ' . $redirect_url);
             exit;
         } else {
-            // Mauvaise réponse
+            // Mauvaise réponse ou timeout
             echo "<div style='text-align:center; margin-top:50px;'>";
-            echo "<h2>Mauvaise réponse</h2>";
-            echo "<p>La bonne réponse était: " . htmlspecialchars($bonne_reponse) . "</p>";
-            
+            if ($answer === '__TIMEOUT__') {
+                echo "<h2>Temps écoulé !</h2>";
+                echo "<p>La bonne réponse était : " . htmlspecialchars($bonne_reponse) . "</p>";
+            } else {
+                echo "<h2>Mauvaise réponse</h2>";
+                echo "<p>La bonne réponse était: " . htmlspecialchars($bonne_reponse) . "</p>";
+            }
             // Lien vers la question suivante, en conservant la catégorie
             $next_url = 'question.php?pseudo=' . urlencode($pseudo) . '&id_joueur=' . urlencode($id_joueur);
             if (!empty($categorie)) {

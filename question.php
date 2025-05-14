@@ -43,7 +43,7 @@ foreach ($categories as $cat) {
 }
 echo "</div>";
 
-// Vérification s'il reste des questions dans la catégorie sélectionnée
+// Vérif s'il reste des questions dans la catégorie sélectionnée
 $sql_check_questions = "
     SELECT COUNT(*) AS total_questions
     FROM question AS q
@@ -78,7 +78,7 @@ if ($questions_left > 0) {
     WHERE jq.id_question IS NULL
     ";
     
-    // Ajout du filtre par catégorie si une catégorie est sélectionnée
+    // Ajout du filtre par catégorie si une catégorie est sélectionné
     if ($categorie) {
         $sql .= " AND q.categorie = :categorie";
     }
@@ -95,9 +95,13 @@ if ($questions_left > 0) {
     if ($stmt->rowCount() > 0) {
         echo "<div class='div_question'>";
         $question = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Timeer de base
+        // 20 secondes
+        echo "<div class='timer-container'><span id='timer' class='timer'>20</span> secondes restantes</div>";
         
-        //ici j'ai l'impresion que le nombre de point est pas parfaitement centré
-        echo "<div style='display: flex; justify-content: space-between; align-items: center;'>";
+        //mettre le nombre de point de l'autre coté
+        echo "<div>";
         echo "<p class='categorie-info'>Catégorie: " . htmlspecialchars($question['categorie']) . "</p>";
         echo "<p class='categorie-info' style='margin-left: auto;'>Points: " . htmlspecialchars($question['nb_point']) . "</p>";
         echo "</div>";
@@ -113,15 +117,47 @@ if ($questions_left > 0) {
         //melanger les reponses pour pas avoir la bonne reponse en premier
         shuffle($answers);
         
-        //creation des bouttons de reponses
+        //formulaire pour chaque reponse
+        //on envoie la question et la reponse dans le formulaire pour verif
         foreach ($answers as $answer) {
-            echo "<form method='post' action='verif.php?pseudo=" . urlencode($pseudo) . "&id_joueur=" . urlencode($id_joueur) . "&categorie=" . urlencode($categorie ?? '') . "'>";
+            echo "<form method='post' action='verif.php?pseudo=" . urlencode($pseudo) . "&id_joueur=" . urlencode($id_joueur) . "&categorie=" . urlencode($categorie ?? '') . "' class='answer-form'>";
             echo "<input type='hidden' name='question' value='" . htmlspecialchars($question['question']) . "'>";
             echo "<input type='hidden' name='answer' value='" . htmlspecialchars($answer) . "'>";
             echo "<button class='button_cat' type='submit'>" . htmlspecialchars($answer) . "</button>";
             echo "</form>";
         }
+        //formulaire caché pour le timeout
+        //est soumis automatiquement quand le temps est écoulé
+        echo "<form id='timeoutForm' method='post' style='display:none' action='verif.php?pseudo=" . urlencode($pseudo) . "&id_joueur=" . urlencode($id_joueur) . "&categorie=" . urlencode($categorie ?? '') . "'>";
+        echo "<input type='hidden' name='question' value='" . htmlspecialchars($question['question']) . "'>";
+        echo "<input type='hidden' name='answer' value='__TIMEOUT__'>";
+        echo "</form>";
+
         echo "</div>";
+        ?>
+        <script>
+        // Timer en secondes
+        let tempsRestant = 20;
+        const timerSpan = document.getElementById('timer');
+        // Met à jour le timer chaque seconde
+        const intervalle = setInterval(function() {
+            tempsRestant--;
+            timerSpan.textContent = tempsRestant;
+            if (tempsRestant <= 0) {
+                clearInterval(intervalle);
+                // Soumet automatiquement le formulaire de timeout
+                document.getElementById('timeoutForm').submit();
+            }
+        }, 1000);
+
+        // Si l'utilisateur répond, on arrête le timer
+        document.querySelectorAll('.answer-form').forEach(function(formulaire) {
+            formulaire.addEventListener('submit', function() {
+                clearInterval(intervalle);
+            });
+        });
+        </script>
+        <?php
     } else {
         echo "<h2>Aucune question disponible dans cette catégorie.</h2>";
         echo "<p><a href='question.php?pseudo=" . urlencode($pseudo) . "&id_joueur=" . urlencode($id_joueur) . "' class='button_cat'>Voir toutes les questions</a></p>";

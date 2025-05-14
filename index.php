@@ -8,6 +8,7 @@
     <title>Quiz</title>
 </head>
 <body>
+<div class="div_question" style="background: none; box-shadow: none; max-width: 900px; margin: 0 auto; padding: 0;">
     <?php
     include 'db.php';
     $sql_cat = "SELECT DISTINCT categorie FROM question";
@@ -31,7 +32,7 @@
 
 
     <div style="text-align: center; margin-top: 20px;">
-        <img src="logo.png" alt="BrainQuest Logo" style="height: 120px;">
+        <img src="logo.png" alt="BrainQuest Logo" style="height: 120px; max-width: 95vw;">
     </div>
 
     
@@ -68,7 +69,7 @@
         $top3_players = $stmt_top3->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($top3_players) > 0) {
-            echo "<div style='display: flex; justify-content: center; align-items: flex-end; gap: 20px;'>";
+            echo "<div style='display: flex; justify-content: center; align-items: flex-end; gap: 20px; flex-wrap: wrap;'>";
             foreach ($top3_players as $index => $player) {
                 $height = 100 - ($index * 20); // ajuste la hauteur pour chaque joueur
                 echo "<div style='text-align: center;'>";
@@ -84,7 +85,6 @@
         }
         ?>
     </div>
-
-
+</div>
 </body>
 </html>
