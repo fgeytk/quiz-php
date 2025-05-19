@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>Quiz</title>
 </head>
 <body>
 <?php
@@ -36,10 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $question = $_POST['question'];
     $answer = $_POST['answer'];
 
-    if (isset($_GET['pseudo']) && isset($_GET['id_joueur'])) {
+    if (isset($_GET['pseudo']) && isset($_GET['id_joueur']) && isset($_GET['categorie'])) {
         $pseudo = $_GET['pseudo'];
         $id_joueur = $_GET['id_joueur'];
-        $categorie = isset($_GET['categorie']) ? $_GET['categorie'] : '';
+        $categorie = $_GET['categorie'];
     }
     
     // Sélectionne la bonne réponse et le nombre de points de la question
